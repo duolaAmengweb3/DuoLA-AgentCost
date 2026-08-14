@@ -176,7 +176,7 @@ AgentCost 只把 Agent 的请求地址切到本机网关
 
 然后用 `duola-agentcost launch codex` 或 `duola-agentcost launch claude` 启动。Codex 模式会临时写入本地 Provider 配置，退出后恢复原文件；其他 Agent 使用对应的本地环境变量接入。
 
-本机真实 Dashboard 是 `http://127.0.0.1:8766/`；公开网址只是静态产品页面，不能显示这台电脑的账本。
+本机真实 Dashboard 是 `http://127.0.0.1:8766/`；公开网址只是静态产品页面，不能显示这台电脑的账本。公开安装器从 GitHub Release 下载对应平台的固定包，并在下载后校验 SHA-256。
 
 ### 账户关联的真实状态
 

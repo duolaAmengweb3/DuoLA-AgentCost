@@ -26,14 +26,14 @@
 
 ## 当前发布状态
 
-当前版本是 **本地核心 release candidate**，不是已经完成普通用户全平台上线的 SaaS。公开官网提供真实安装入口和 macOS 固定包；DuoLA 账户、云端账本和模型托管不属于当前版本。
+当前版本是 **本地核心公开版**，不是云端 SaaS。公开官网提供真实安装入口；DuoLA 账户、云端账本和模型托管不属于当前版本。
 
 已完成的真实路径：
 
-- macOS Apple Silicon/Intel 预编译二进制、SHA-256 校验和；
+- macOS Apple Silicon/Intel、Linux x86_64、Windows x86_64 预编译二进制、SHA-256 校验和；
 - `duola-agentcost setup` 自动检测 Agent、准备最小 Provider；
 - `duola-agentcost launch codex --open-dashboard` 自动启动 Gateway、接入 Agent、打开本机 Dashboard；
-- 公开官网根路径、安装脚本、Dashboard 预览和固定下载包已分开。
+- 公开官网根路径、安装脚本、Dashboard 预览和固定下载包已分开；固定包由 GitHub Release 发布并可独立校验。
 
 仍不能宣称已完成：
 

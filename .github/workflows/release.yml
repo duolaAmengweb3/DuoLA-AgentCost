@@ -39,7 +39,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          version="$(sed -n 's/^version = "\([^"]*\)"/\1/p' Cargo.toml | head -1)"
+          # The tag is the release contract. Do not let a stale Cargo manifest
+          # silently publish an archive with a different version in its name.
+          version="${GITHUB_REF_NAME#v}"
           name="duola-agentcost-v${version}-${{ matrix.target }}"
           mkdir "$name"
           cp "target/${{ matrix.target }}/release/duola-agentcost" "$name/"
@@ -50,7 +52,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $version = (Select-String -Path Cargo.toml -Pattern '^version = "([^"]+)"').Matches[0].Groups[1].Value
+          # The tag is the release contract (same rule as Unix builds).
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
           $name = "duola-agentcost-v$version-${{ matrix.target }}"
           New-Item -ItemType Directory -Force $name | Out-Null
           Copy-Item "target/${{ matrix.target }}/release/duola-agentcost.exe" "$name/"

@@ -3,8 +3,8 @@ set -euo pipefail
 
 # Public installer: downloads a fixed release artifact. For local development
 # from a checkout, use the repository's scripts/install.sh instead.
-VERSION="${DUOLA_AGENTCOST_VERSION:-0.1.0}"
-BASE_URL="${DUOLA_AGENTCOST_RELEASE_BASE_URL:-https://agentcost.manyaitool.com/downloads}"
+VERSION="${DUOLA_AGENTCOST_VERSION:-0.1.3}"
+BASE_URL="${DUOLA_AGENTCOST_RELEASE_BASE_URL:-https://github.com/duolaAmengweb3/DuoLA-AgentCost/releases/download/v${VERSION}}"
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 case "$OS/$ARCH" in
@@ -18,7 +18,11 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 curl --fail --location --silent --show-error "$BASE_URL/${NAME}.tar.gz" -o "$TMP/${NAME}.tar.gz"
 curl --fail --location --silent --show-error "$BASE_URL/${NAME}.tar.gz.sha256" -o "$TMP/${NAME}.tar.gz.sha256"
-(cd "$TMP" && shasum -a 256 -c "${NAME}.tar.gz.sha256")
+if command -v sha256sum >/dev/null 2>&1; then
+  (cd "$TMP" && sha256sum -c "${NAME}.tar.gz.sha256")
+else
+  (cd "$TMP" && shasum -a 256 -c "${NAME}.tar.gz.sha256")
+fi
 tar -xzf "$TMP/${NAME}.tar.gz" -C "$TMP"
 DEST="${DUOLA_AGENTCOST_INSTALL_DIR:-$HOME/.local/bin/duola-agentcost}"
 mkdir -p "$(dirname "$DEST")"
