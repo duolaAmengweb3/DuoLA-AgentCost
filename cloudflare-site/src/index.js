@@ -3,7 +3,7 @@ const ORIGIN = "https://duola-agentcost.pages.dev";
 export default {
   async fetch(request) {
     const incoming = new URL(request.url);
-    const releasePrefix = "/downloads/duola-agentcost-v0.1.3-";
+    const releasePrefix = "/downloads/duola-agentcost-v0.1.4-";
     // Keep the historical /downloads URL usable while the canonical release
     // artifacts live on GitHub. Pages' SPA fallback would otherwise return
     // HTML with a 200 status for a missing binary, which is a bad installer
@@ -12,7 +12,7 @@ export default {
       const filename = incoming.pathname.slice("/downloads/".length);
       if (!filename.includes("/")) {
         return Response.redirect(
-          `https://github.com/duolaAmengweb3/DuoLA-AgentCost/releases/download/v0.1.3/${filename}`,
+          `https://github.com/duolaAmengweb3/DuoLA-AgentCost/releases/download/v0.1.4/${filename}`,
           302
         );
       }

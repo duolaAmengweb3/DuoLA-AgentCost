@@ -59,7 +59,11 @@ jobs:
           Copy-Item "target/${{ matrix.target }}/release/duola-agentcost.exe" "$name/"
           Copy-Item README.md, RELEASE.md "$name/"
           Compress-Archive -Path $name -DestinationPath "$name.zip"
-          (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower() + "  $name.zip" | Out-File "$name.zip.sha256" -Encoding ascii
+          $checksum = (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower()
+          # Write LF explicitly so sha256sum/shasum can verify the Windows
+          # artifact from any host as well as from PowerShell.
+          $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+          [System.IO.File]::WriteAllText("$name.zip.sha256", "$checksum  $name.zip`n", $utf8NoBom)
       - uses: actions/upload-artifact@v4
         with:
           name: duola-agentcost-${{ matrix.target }}

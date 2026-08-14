@@ -1,5 +1,5 @@
 $ErrorActionPreference = "Stop"
-$Version = if ($env:DUOLA_AGENTCOST_VERSION) { $env:DUOLA_AGENTCOST_VERSION } else { "0.1.3" }
+$Version = if ($env:DUOLA_AGENTCOST_VERSION) { $env:DUOLA_AGENTCOST_VERSION } else { "0.1.4" }
 $Base = if ($env:DUOLA_AGENTCOST_RELEASE_BASE_URL) { $env:DUOLA_AGENTCOST_RELEASE_BASE_URL } else { "https://github.com/duolaAmengweb3/DuoLA-AgentCost/releases/download/v$Version" }
 $Name = "duola-agentcost-v$Version-x86_64-pc-windows-msvc"
 $Temp = Join-Path ([System.IO.Path]::GetTempPath()) ([System.Guid]::NewGuid().ToString())

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Public installer: downloads a fixed release artifact. For local development
 # from a checkout, use the repository's scripts/install.sh instead.
-VERSION="${DUOLA_AGENTCOST_VERSION:-0.1.3}"
+VERSION="${DUOLA_AGENTCOST_VERSION:-0.1.4}"
 BASE_URL="${DUOLA_AGENTCOST_RELEASE_BASE_URL:-https://github.com/duolaAmengweb3/DuoLA-AgentCost/releases/download/v${VERSION}}"
 OS="$(uname -s)"
 ARCH="$(uname -m)"
