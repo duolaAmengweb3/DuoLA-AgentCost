@@ -3,6 +3,20 @@ const ORIGIN = "https://duola-agentcost.pages.dev";
 export default {
   async fetch(request) {
     const incoming = new URL(request.url);
+    const releasePrefix = "/downloads/duola-agentcost-v0.1.3-";
+    // Keep the historical /downloads URL usable while the canonical release
+    // artifacts live on GitHub. Pages' SPA fallback would otherwise return
+    // HTML with a 200 status for a missing binary, which is a bad installer
+    // failure mode.
+    if (incoming.pathname.startsWith(releasePrefix)) {
+      const filename = incoming.pathname.slice("/downloads/".length);
+      if (!filename.includes("/")) {
+        return Response.redirect(
+          `https://github.com/duolaAmengweb3/DuoLA-AgentCost/releases/download/v0.1.3/${filename}`,
+          302
+        );
+      }
+    }
     const target = new URL(ORIGIN);
     // The public root is the product landing page. The local Dashboard
     // preview remains available at /dashboard so the two user journeys are
