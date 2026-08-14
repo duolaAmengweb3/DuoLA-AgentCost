@@ -1,0 +1,37 @@
+[package]
+name = "duola-agentcost"
+version = "0.1.0"
+edition = "2024"
+description = "Local-first Agent gateway for cost, context and budget control"
+license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://duola.ai"
+repository = "https://github.com/duolaAmengweb3/DuoLA-AgentCost"
+documentation = "https://github.com/duolaAmengweb3/DuoLA-AgentCost#readme"
+keywords = ["agent", "gateway", "llm", "cost", "local-first"]
+categories = ["command-line-utilities", "web-programming::http-server"]
+
+[dependencies]
+anyhow = "1"
+async-stream = "0.3"
+axum = "0.8"
+chrono = { version = "0.4", features = ["serde", "clock"] }
+clap = { version = "4", features = ["derive", "env"] }
+dirs = "6"
+futures-util = "0.3"
+hex = "0.4"
+http = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+toml = "0.8"
+toml_edit = "0.22"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+[dev-dependencies]
+tempfile = "3"

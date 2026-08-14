@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developers.cloudflare.com/workers/wrangler/config-schema.json",
+  "name": "duola-agentcost-site",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-14",
+  "routes": [
+    {
+      "pattern": "agentcost.manyaitool.com",
+      "custom_domain": true
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+gateway_listen = "127.0.0.1:8765"
+admin_listen = "127.0.0.1:8766"
+default_provider = "openai"
+# Hard byte ceilings; raise only for a workload that needs it.
+max_request_bytes = 33554432
+max_response_bytes = 67108864
+# For LAN/container/public Gateway use an environment variable, never put
+# the token itself in this file. Non-loopback listeners refuse to start
+# without this setting.
+# gateway_auth_token_env = "DUOLA_GATEWAY_TOKEN"
+stream_idle_timeout_seconds = 120
+
+[[providers]]
+id = "openai"
+endpoint = "https://api.openai.com"
+protocol = "openai-responses"
+api_key_env = "OPENAI_API_KEY"
+input_price_per_million = 2.5
+output_price_per_million = 10.0
+# Explicit routing only; no hidden model downgrade.
+# [providers.model_map]
+# "gpt-4.1" = "gpt-4.1-mini"
+
+[[providers]]
+id = "backup"
+endpoint = "https://api.anthropic.com"
+protocol = "anthropic-messages"
+api_key_env = "ANTHROPIC_API_KEY"
+
+[budget]
+# Token budgets work without provider pricing and are checked before every request.
+# request_tokens = 120000
+# session_tokens = 1000000
+# daily_tokens = 5000000
+# request_output_tokens = 4096
+# Optional dollar budgets require explicit provider prices.
+# request_usd = 1.0
+# session_usd = 5.0
+# daily_usd = 20.0
+max_same_fingerprint = 3
+# Optional local protection. Unset means unlimited.
+# requests_per_minute = 120
+# max_concurrency = 8
+# Scope keys are explicit request headers, never inferred from prompt text.
+# [budget.scopes."project:backend"]
+# daily_tokens = 1000000
+# request_usd = 0.50
+# [budget.scopes."agent:codex"]
+# max_concurrency = 4
+
+[cache]
+# Exact caching is opt-in because coding-agent requests can be stateful.
+# Only non-streaming, read-only-shaped JSON requests are cacheable.
+enabled = false
+ttl_seconds = 300
+max_entries = 256
+max_entry_bytes = 2097152
+max_total_bytes = 67108864
+
+[routing]
+# priority = configured order; cost = lowest explicit input price first.
+mode = "priority"
+max_attempts = 3
+# Optional cost-routing pool; empty means the selected provider + fallbacks.
+# pool = ["openai", "backup"]
+# Unknown protocols keep non-idempotent fallback off by default.
+# allow_non_idempotent_fallback = false
+# Open a provider circuit after repeated transient failures, then probe again.
+circuit_breaker_threshold = 3
+circuit_breaker_cooldown_seconds = 30
+
+[privacy]
+# Strict mode disables exact cache and keeps only the minimum receipt metadata.
+strict = false
+
+[transform]
+strip_ansi = true
+collapse_repeated_tool_lines = true
+compact_tool_json = true
+dedupe_repeated_tool_results = true
+tool_surface_reduction = true
+# Relevance filtering only activates for large tool surfaces and clear tasks.
+tool_surface_min_tools = 16
+tool_surface_min_keep = 4
+# Disabled by default. Set only when the project accepts bounded tool output.
+# max_tool_result_bytes = 65536

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f5f2">
+  <title>DuoLA AgentCost · 让 Agent 少花 Token，少走弯路</title>
+  <meta name="description" content="DuoLA AgentCost 是运行在你电脑上的本地 Agent 成本与上下文控制层。继续使用原来的 Coding Agent，数据留在本机。">
+  <style>
+    :root { --paper:#f4f5f2; --paper2:#e9ece7; --ink:#111714; --sub:#5b675f; --line:#cfd5ce; --rail:#121914; --blue:#315efb; --green:#168861; --white:#fbfcf9; font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; background:var(--paper); }
+    body { margin:0; color:var(--ink); background:var(--paper); }
+    a { color:inherit; }
+    .shell { width:min(1180px,calc(100% - 44px)); margin:0 auto; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; padding:22px 0; border-bottom:1px solid var(--line); }
+    .brand { display:flex; gap:11px; align-items:center; text-decoration:none; }
+    .logo { width:37px; height:37px; border:1px solid #7d9efb; border-radius:10px; object-fit:cover; background:#e5efff; }
+    .brand strong { display:block; font-size:14px; letter-spacing:-.02em; }
+    .brand small { display:block; margin-top:3px; color:#78847b; font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+    .nav { display:flex; align-items:center; gap:24px; color:var(--sub); font-size:12px; }
+    .nav a { text-decoration:none; }
+    .nav a:hover { color:var(--ink); }
+    .nav .button { color:var(--white); }
+    .button { display:inline-flex; justify-content:center; align-items:center; min-height:42px; padding:0 17px; border:1px solid var(--ink); border-radius:7px; color:var(--white); background:var(--ink); font-size:12px; font-weight:700; text-decoration:none; }
+    .button:hover { background:#2a352d; }
+    .button.secondary { color:var(--ink); background:transparent; border-color:var(--line); }
+    .button.secondary:hover { background:var(--paper2); }
+    .eyebrow { color:var(--blue); font-size:10px; font-weight:800; letter-spacing:.17em; text-transform:uppercase; }
+    .hero { padding:86px 0 74px; border-bottom:1px solid var(--line); }
+    .hero-grid { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr); gap:64px; align-items:end; }
+    h1 { max-width:790px; margin:14px 0 20px; font-size:clamp(45px,7vw,88px); line-height:.98; letter-spacing:-.075em; font-weight:770; }
+    .hero-copy { max-width:680px; margin:0; color:var(--sub); font-size:17px; line-height:1.65; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:30px; }
+    .proof { padding:22px 0 0; color:var(--sub); font-size:12px; line-height:1.65; }
+    .proof strong { color:var(--ink); }
+    .hero-card { padding:22px; border:1px solid #29352d; color:#e8f1e9; background:var(--rail); }
+    .hero-card h2 { margin:10px 0 12px; color:#fff; font-size:24px; letter-spacing:-.05em; }
+    .hero-card p { margin:0; color:#a7b5aa; font-size:12px; line-height:1.7; }
+    .flow { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:22px; border:1px solid #334239; }
+    .flow div { min-height:113px; padding:16px; border-right:1px solid #334239; }
+    .flow div:last-child { border-right:0; }
+    .flow small { color:#82928a; font:10px ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .flow b { display:block; margin-top:22px; color:#fff; font-size:13px; }
+    .section { padding:75px 0; border-bottom:1px solid var(--line); }
+    .section-head { display:flex; justify-content:space-between; gap:24px; align-items:end; margin-bottom:26px; }
+    h2 { margin:8px 0 0; font-size:37px; line-height:1.05; letter-spacing:-.06em; }
+    .section-head p { max-width:420px; margin:0; color:var(--sub); font-size:13px; line-height:1.7; }
+    .value-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border:1px solid var(--line); background:var(--white); }
+    .value { min-height:210px; padding:25px; border-right:1px solid var(--line); }
+    .value:last-child { border-right:0; }
+    .value-number { color:var(--blue); font:10px ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .value h3 { margin:42px 0 11px; font-size:20px; letter-spacing:-.04em; }
+    .value p { margin:0; color:var(--sub); font-size:12px; line-height:1.7; }
+    .journey { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .step { min-height:190px; padding:19px; border-right:1px solid var(--line); }
+    .step:last-child { border-right:0; }
+    .step span { color:#7d8980; font:10px ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .step h3 { margin:34px 0 10px; font-size:16px; letter-spacing:-.03em; }
+    .step p { margin:0; color:var(--sub); font-size:11px; line-height:1.7; }
+    .install { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:30px; align-items:start; }
+    .install-copy p { max-width:490px; color:var(--sub); font-size:14px; line-height:1.7; }
+    .install-card { padding:24px; border:1px solid #29352d; color:#e8f1e9; background:var(--rail); }
+    .install-card h3 { margin:0 0 13px; color:#fff; font-size:19px; }
+    .install-card p { margin:0 0 14px; color:#a7b5aa; font-size:11px; line-height:1.6; }
+    pre { overflow:auto; margin:0; padding:16px; border:1px solid #334239; color:#dbe9df; background:#0d120f; font:12px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; }
+    .install-links { display:flex; flex-wrap:wrap; gap:9px; margin-top:15px; }
+    .install-links a { color:#aebfff; font-size:11px; }
+    .boundary { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border:1px solid var(--line); background:var(--white); }
+    .boundary div { min-height:150px; padding:22px; border-right:1px solid var(--line); }
+    .boundary div:last-child { border-right:0; }
+    .boundary h3 { margin:0 0 11px; font-size:16px; letter-spacing:-.03em; }
+    .boundary p { margin:0; color:var(--sub); font-size:12px; line-height:1.7; }
+    .footer { display:flex; justify-content:space-between; gap:20px; padding:28px 0 44px; color:#778279; font-size:11px; }
+    @media (max-width:820px) { .nav a:not(.button) { display:none; } .hero { padding:58px 0 48px; } .hero-grid,.install { grid-template-columns:1fr; gap:28px; } .flow { grid-template-columns:repeat(2,minmax(0,1fr)); } .flow div:nth-child(2) { border-right:0; } .flow div:nth-child(-n+2) { border-bottom:1px solid #334239; } .value-grid,.boundary { grid-template-columns:1fr; } .value,.boundary div { border-right:0; border-bottom:1px solid var(--line); } .value:last-child,.boundary div:last-child { border-bottom:0; } .journey { grid-template-columns:1fr; } .step { min-height:0; border-right:0; border-bottom:1px solid var(--line); } .step:last-child { border-bottom:0; } .section-head { display:block; } .section-head p { margin-top:13px; } }
+    @media (max-width:520px) { .shell { width:min(100% - 30px,1180px); } .topbar { padding:16px 0; } h1 { font-size:47px; } h2 { font-size:31px; } .hero-copy { font-size:15px; } .flow div { min-height:100px; } .flow b { margin-top:16px; } .footer { display:block; } .footer span { display:block; margin-top:7px; } }
+  </style>
+</head>
+<body>
+  <header class="shell topbar">
+    <a class="brand" href="/">
+      <img class="logo" src="/logo.png" alt="DuoLA logo">
+      <span><strong>DuoLA AgentCost</strong><small>Local agent runtime</small></span>
+    </a>
+    <nav class="nav" aria-label="主导航">
+      <a href="#value">能力</a><a href="#how">怎么用</a><a href="#privacy">隐私边界</a>
+      <a class="button" href="#install">开始安装</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">DuoLA / local runtime</div>
+          <h1>让 Agent 少花 Token，少走弯路。</h1>
+          <p class="hero-copy">DuoLA AgentCost 运行在你的电脑上，接在 Codex、Claude Code、Cursor 和模型 Provider 之间。它控制重复上下文、预算和失控重试，把每一次请求变成看得懂的本地账。</p>
+          <div class="hero-actions"><a class="button" href="#install">安装本地运行时</a><a class="button secondary" href="/dashboard">查看 Dashboard 预览</a></div>
+          <div class="proof"><strong>不换 Agent，不上传代码。</strong> 继续使用你已有的 Agent 登录态；DuoLA 默认不要求额外 API Key，也不把 Prompt、代码和凭证上传到云端。</div>
+        </div>
+        <div class="hero-card">
+          <div class="eyebrow">What happens on every request</div>
+          <h2>请求经过本机，账留在本机。</h2>
+          <p>AgentCost 不替你做任务，也不再包一层 AI。它只做确定性控制：安全时减少无效上下文，不确定时原样透传。</p>
+          <div class="flow"><div><small>01 / AGENT</small><b>照常工作</b></div><div><small>02 / GATEWAY</small><b>本地接管</b></div><div><small>03 / RULES</small><b>确定性处理</b></div><div><small>04 / LEDGER</small><b>可解释记账</b></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell section" id="value">
+      <div class="section-head"><div><div class="eyebrow">What you get</div><h2>不是再做一个 Agent，<br>而是给它加上边界。</h2></div><p>当任务变长、工具变多、错误开始重复时，真正浪费的是上下文、重试和无人看管的预算。AgentCost 把这些资源变成可以控制、可以复盘的运行数据。</p></div>
+      <div class="value-grid"><article class="value"><div class="value-number">01 / CONTEXT</div><h3>只处理能证明安全的冗余</h3><p>清理 ANSI、重复长日志、等价 JSON 和同一请求内的重复结果。代码、错误、工具调用和不确定内容默认原样保留。</p></article><article class="value"><div class="value-number">02 / CONTROL</div><h3>预算到了就停，不让任务失控</h3><p>按请求、会话、项目和 Agent 设置 Token、费用、并发和重复错误边界；触发时明确告诉你为什么被阻断。</p></article><article class="value"><div class="value-number">03 / PROOF</div><h3>知道省了什么，也知道没省什么</h3><p>本地账本记录原始输入、实际发送、Provider usage、成本、延迟、规则和回退尝试，不拿估算冒充真实账单。</p></article></div>
+    </section>
+
+    <section class="shell section" id="how">
+      <div class="section-head"><div><div class="eyebrow">A normal user journey</div><h2>安装一次，继续用原来的 Agent。</h2></div><p>免费本地核心不要求 DuoLA 账户。你登录的仍然是 Codex、Claude Code、Cursor 或自己的 Provider。</p></div>
+      <div class="journey"><article class="step"><span>01 / INSTALL</span><h3>下载安装</h3><p>安装一个本地二进制，不安装 Node、Python，也不修改项目代码。</p></article><article class="step"><span>02 / DETECT</span><h3>自动检测</h3><p>首次设置自动识别本机 Agent 和协议，生成最小配置，不要求手写 TOML。</p></article><article class="step"><span>03 / CONNECT</span><h3>接入本机网关</h3><p>AgentCost 把请求地址临时指向 127.0.0.1，原有配置可恢复。</p></article><article class="step"><span>04 / WORK</span><h3>照常开发</h3><p>你继续用原来的命令。请求自动经过本地规则、预算和账本。</p></article><article class="step"><span>05 / REVIEW</span><h3>查看与退出</h3><p>打开本机 Dashboard 看结果；需要时一键暂停优化或恢复原始路径。</p></article></div>
+    </section>
+
+    <section class="shell section" id="install">
+      <div class="install"><div class="install-copy"><div class="eyebrow">Install locally</div><h2>三分钟内跑通第一次请求。</h2><p>当前公开提供 macOS Apple Silicon/Intel 的固定版本安装包，带 SHA-256 校验；Linux/Windows 的固定版本由同一套发布流程生成，源码安装脚本也保留给开发者。</p><div class="hero-actions"><a class="button" href="/install.sh">下载 macOS 安装脚本</a><a class="button secondary" href="/install.ps1">Windows 安装入口</a></div></div><div class="install-card"><h3>安装后只需要这一条</h3><p>安装器会自动准备本机配置；没有 DuoLA 登录，也不会要求你先填 API Key。</p><pre>duola-agentcost launch codex --open-dashboard</pre><div class="install-links"><a href="/dashboard">本机 Dashboard 说明 →</a><a href="/downloads/duola-agentcost-v0.1.0-aarch64-apple-darwin.tar.gz">Apple Silicon 固定包 →</a><a href="/downloads/duola-agentcost-v0.1.0-x86_64-apple-darwin.tar.gz">Intel Mac 固定包 →</a></div></div></div>
+    </section>
+
+    <section class="shell section" id="privacy">
+      <div class="section-head"><div><div class="eyebrow">Trust boundary</div><h2>数据留在你的环境里。</h2></div><p>AgentCost 不是云端代理。你的代码、Prompt、Completion 和 Provider Key 不会因为使用本地控制层而上传给 DuoLA。</p></div>
+      <div class="boundary"><div><h3>默认不需要 DuoLA 账户</h3><p>免费本地核心可以直接使用。DuoLA 当前不读取你的 Agent OAuth，也不要求绑定账号。</p></div><div><h3>凭证留在 Agent / 本机</h3><p>已有 Agent 登录态继续由 Agent 使用；独立 Provider 的 Key 只从本机环境变量读取，不写入 AgentCost 配置。</p></div><div><h3>随时恢复原路径</h3><p>暂停优化、bypass 或退出托管模式后，请求恢复原样转发，Codex 配置会按快照恢复。</p></div></div>
+    </section>
+  </main>
+  <footer class="shell footer"><strong>DuoLA AgentCost</strong><span>Local-first Agent context and cost control · <a href="/dashboard">Dashboard preview</a></span></footer>
+</body>
+</html>

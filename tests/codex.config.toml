@@ -1,0 +1,6 @@
+model_provider = "original"
+
+[model_providers.original]
+name = "Original"
+base_url = "https://example.invalid/v1"
+wire_api = "responses"
